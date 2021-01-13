@@ -1,0 +1,152 @@
+#include <iostream>
+#include<stdio.h>
+#include<stdlib.h>
+#include<conio.h>
+#include<string.h>
+#include<graphics.h>
+struct cricket
+{
+    char name[30];
+    int score;
+    int innings;
+    float strike_rate;
+
+};
+int main()
+{
+    struct cricket b[100];
+    int i=0;
+    int total;
+    int gd=DETECT,gm,x,y;
+    /*READING THE DATA FROM THE FILE.*/
+    FILE *fp;
+    fp=fopen("indiadata.txt","r");
+    char *tmp1;
+    char temp[500];
+    while (EOF != fscanf(fp, "%[^\n]\n", temp))
+    {
+
+        tmp1=strtok(temp,",");
+
+        strcpy(b[i].name, tmp1);
+        tmp1=strtok(NULL,",");
+        b[i].score=atoi(tmp1);
+        tmp1=strtok(NULL,",");
+        b[i].innings = atoi(tmp1);
+        tmp1=strtok(NULL,",");
+        b[i].strike_rate=strtof(tmp1,NULL);
+        printf("Name: %s, Score: %d, Innings: %d , strike rate: %.2f\n", b[i].name, b[i].score, b[i].innings,b[i].strike_rate);
+        i = i + 1;
+
+    }
+   total=i-1;
+
+    /*pie chart for players score.*/
+    float sum=0;
+    float startangle[50],endangle[50];
+    for(i=0;i<=total;i++)
+    {
+        sum+=b[i].score;
+    }
+    startangle[0]=0;
+    for(i=0;i<=total;i++)
+    {
+        endangle[i]=startangle[i]+(b[i].score*360)/sum;
+        startangle[i+1]=endangle[i];
+    }
+    /*setting the program in graphics mode.*/
+    initgraph(&gd,&gm,(char*)"");
+    settextstyle(BOLD_FONT,HORIZ_DIR,2);
+    outtextxy(100,10,"INDIAN PLAYERS SCORE ANALYSIS!");
+    x=getmaxx()/2;
+    y=getmaxy()/2;
+    for(i=0;i<=total;i++)
+    {
+        setfillstyle(SOLID_FILL,i+1);
+        pieslice(x,y,startangle[i],endangle[i],120);
+    }
+    /*pie chart for players innings.*/
+    endangle[0]=0;
+    sum=0;
+     for(i=0;i<=total;i++)
+    {
+        sum+=b[i].innings;
+    }
+    startangle[0]=0;
+    for(i=0;i<=total;i++)
+    {
+        endangle[i]=startangle[i]+(b[i].innings*360)/sum;
+        startangle[i+1]=endangle[i];
+    }
+    /*setting the program in graphics mode.*/
+    initgraph(&gd,&gm,(char*)"");
+    settextstyle(BOLD_FONT,HORIZ_DIR,2);
+    outtextxy(100,10,"INDIAN PLAYERS INNINGS ANALYSIS!");
+    x=getmaxx()/2;
+    y=getmaxy()/2;
+    for(i=0;i<=total;i++)
+    {
+        setfillstyle(SOLID_FILL,i+1);
+        pieslice(x,y,startangle[i],endangle[i],120);
+    }
+     /*pie chart for players strike rate.*/
+    endangle[0]=0;
+    float strike=0.00;
+     for(i=0;i<=total;i++)
+    {
+        strike+=b[i].strike_rate;
+    }
+    startangle[0]=0;
+    for(i=0;i<=total;i++)
+    {
+        endangle[i]=startangle[i]+(b[i].strike_rate*360.0)/strike;
+        startangle[i+1]=endangle[i];
+    }
+    /*setting the program in graphics mode.*/
+    initgraph(&gd,&gm,(char*)"");
+    settextstyle(BOLD_FONT,HORIZ_DIR,2);
+    outtextxy(100,10,"INDIAN PLAYERS SRTIKE RATE ANALYSIS!");
+    x=getmaxx()/2;
+    y=getmaxy()/2;
+    for(i=0;i<=total;i++)
+    {
+        setfillstyle(SOLID_FILL,i+1);
+        pieslice(x,y,startangle[i],endangle[i],120);
+    }
+    /*individual data execution.*/
+    int opinion;
+    printf("\n\t\t\tENTER YOUR FAVOURITE!!!\n");
+    for(i=0;i<=total;i++)
+    {
+        printf("%d---->%s\n",i+1,b[i].name);
+    }
+    scanf("%d",&opinion);
+    if(opinion)
+   {
+    startangle[0]=0;endangle[0]=0;
+    float per=(float)b[opinion-1].score+(float)b[opinion-1].innings+b[opinion-1].strike_rate;
+    endangle[0]=startangle[0]+(float)(b[opinion-1].score*360.0)/per;
+    startangle[1]=endangle[0];
+    endangle[1]=startangle[1]+(float)(b[opinion-1].innings*360.0)/per;
+    startangle[2]=endangle[1];
+    endangle[2]=startangle[2]+(b[opinion-1].strike_rate*360.0)/per;
+    /*pie chart for individual*/
+    initgraph(&gd,&gm,(char*)"");
+    settextstyle(BOLD_FONT,HORIZ_DIR,5);
+    outtextxy(350,10,b[opinion-1].name);
+    for(i=0;i<3;i++)
+    {
+        setfillstyle(HATCH_FILL,i+1);
+        pieslice(x,y,startangle[i],endangle[i],120);
+    }}
+
+
+
+
+    getch();
+    closegraph();
+    return 0;
+
+
+
+}
